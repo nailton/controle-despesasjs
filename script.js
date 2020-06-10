@@ -12,15 +12,16 @@ const form = document.querySelector('#form')
 const inputTransactionName = document.querySelector('#text')
 const inputTransactionAmount = document.querySelector('#amount')
 
-let dummyTransactions = [
-    { id: 1, name: 'Bolo de cenoura', amount: -20 },
-    { id: 2, name: 'Salário', amount: 300 },
-    { id: 3, name: 'Torta de frango', amount: -10 },
-    { id: 3, name: 'Violão', amount: 150 }
-]
+const localStorageTransaction = JSON.parse(localStorage
+    .getItem('transactions'))
+
+let transactions = localStorage
+    .getItem('transactions') !== null ? localStorageTransaction : []
 
 const removeTransaction = ID => {
-    dummyTransactions = dummyTransactions.filter(transaction => transaction.id !== ID)
+    transactions = transactions
+        .filter(transaction => transaction.id !== ID)
+    updateLocalStorage()
     init()
 }
 
@@ -42,7 +43,7 @@ const addTransactionIntoDOM = transaction => {
 }
 
 const updateBalanceValues = () => {
-    const transactionsAmounts = dummyTransactions
+    const transactionsAmounts = transactions
         .map(transaction => transaction.amount)
 
     const total = transactionsAmounts
@@ -66,10 +67,15 @@ const updateBalanceValues = () => {
 
 const init = () => {
     transactionUl.innerHTML = ''
-    dummyTransactions.forEach(addTransactionIntoDOM)
+    transactions.forEach(addTransactionIntoDOM)
     updateBalanceValues()
 }
+
 init()
+
+const updateLocalStorage = () => {
+    localStorage.setItem('transactions', JSON.stringify(transactions))
+}
 
 const generateID = () => Math.round(Math.random() * 1000)
 
@@ -89,8 +95,9 @@ form.addEventListener('submit', event => {
         amount: Number(transactionAmount)
     }
 
-    dummyTransactions.push(transaction)
+    transactions.push(transaction)
     init()
+    updateLocalStorage()
 
     inputTransactionName.value = ''
     inputTransactionAmount.value = ''
