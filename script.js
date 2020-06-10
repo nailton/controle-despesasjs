@@ -26,7 +26,14 @@ li.innerHTML = `
 transactionUl.append(li)
 }
 
+const updateBalanceValues = () => {
+  const transactionsAmounts = dummyTransactions.map(transaction => transaction.amount)
+  const total = transactionsAmounts.reduce((accumulator, transaction) => accumulator + transaction, 0).toFixed(2)
+  console.log(total)
+}
+
 const init = () => {
   dummyTransactions.forEach(addTransactionIntoDOM)
+  updateBalanceValues()
 }
 init()
